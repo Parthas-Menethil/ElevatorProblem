@@ -58,6 +58,24 @@ float loading(Package *pkgs, Package *p, int num){
 	}
 	return tWeight;
 }
+int greedyLoading(Package *pkgs, const int num){
+	int totTime = 0;
+	Package p[num];
+	mergeSort(pkgs, p, 0, num - 1);
+	int processedPackages = 0;
+	while (processedPackages < num){
+		float tWeight = 0, loadCapacity = 10, maxFloor = 0;
+		for (; processedPackages < num && p[processedPackages].weight <= loadCapacity; processedPackages++){
+			p[processedPackages].loaded = true;
+			if (p[processedPackages].destFloor > maxFloor)
+				maxFloor = p[processedPackages].destFloor;
+			tWeight += p[processedPackages].weight;
+			loadCapacity -= p[processedPackages].weight;
+		}
+		totTime += maxFloor * 2;
+	}
+	return totTime;
+}
 int main(){
 	srand(time(NULL));
 	int maxFloor = 0, packNumber = 0;
@@ -71,9 +89,7 @@ int main(){
 		cout << "Weight:" << pkgs[i].weight << "kg To:" << pkgs[i].destFloor << endl;
 	}
 	cout << "Start Loading..." << endl;
-	Package p[packNumber];
-	cout << "Total Weight:" << loading(pkgs.data(), p, packNumber) << endl;
-	for (int i = 0; i < packNumber; i++)
-		cout << "Weight: " << p[i].weight << "kg To:" << p[i].destFloor << " Loaded:" << p[i].loaded << endl;
+	cout << "Greedy Elevator:" << greedyLoading(pkgs.data(), packNumber) << endl;
+	
 	return 0;
 }
