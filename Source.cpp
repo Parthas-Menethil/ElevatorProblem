@@ -47,7 +47,17 @@ void merge(Package *a, Package *b, int low, int pivot, int high){
 	for (k = low; k <= high; k++)
 		a[k] = b[k];
 }
-
+// Greedy Loading
+float loading(Package *pkgs, Package *p, int num){
+	mergeSort(pkgs, p, 0, num - 1);
+	float tWeight = 0, loadCapacity = 10;
+	for (int i = 0; i < num && p[i].weight <= loadCapacity; i++){
+		p[i].loaded = true;
+		tWeight += p[i].weight;
+		loadCapacity -= p[i].weight;
+	}
+	return tWeight;
+}
 int main(){
 	srand(time(NULL));
 	int maxFloor = 0, packNumber = 0;
@@ -60,9 +70,10 @@ int main(){
 		pkgs.push_back(Package(maxFloor));
 		cout << "Weight:" << pkgs[i].weight << "kg To:" << pkgs[i].destFloor << endl;
 	}
+	cout << "Start Loading..." << endl;
 	Package p[packNumber];
-	mergeSort(pkgs.data(), p, 0, packNumber - 1);
+	cout << "Total Weight:" << loading(pkgs.data(), p, packNumber) << endl;
 	for (int i = 0; i < packNumber; i++)
-		cout << "Weight: " << p[i].weight << "kg To:" << p[i].destFloor << endl;
+		cout << "Weight: " << p[i].weight << "kg To:" << p[i].destFloor << " Loaded:" << p[i].loaded << endl;
 	return 0;
 }
